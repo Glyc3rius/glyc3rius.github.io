@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Stealc Malware Analysis - Glyc3rius</title><meta name="Description" content="This sample of Stealc infostealer targets browsers, extensions, desktop cryptocurrency wallets and applications such as Outlook, Steam, Discord, Telegram, Tox, and Pidgin. It also gathers information about the victim&#39;s machine. Several anti-analysis methods are applied while strings are obfuscated with base64 and RC4."><meta property="og:title" content="Stealc Malware Analysis" />
+<meta property="og:description" content="This sample of Stealc infostealer targets browsers, extensions, desktop cryptocurrency wallets and applications such as Outlook, Steam, Discord, Telegram, Tox, and Pidgin. It also gathers information about the victim&#39;s machine. Several anti-analysis methods are applied while strings are obfuscated with base64 and RC4." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://glyc3rius.github.io/2023/10/stealc/" /><meta property="og:image" content="https://glyc3rius.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-10-03T00:00:00+00:00" /><meta property="og:site_name" content="Blog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://glyc3rius.github.io/logo.png"/>
+
+<meta name="twitter:title" content="Stealc Malware Analysis"/>
+<meta name="twitter:description" content="This sample of Stealc infostealer targets browsers, extensions, desktop cryptocurrency wallets and applications such as Outlook, Steam, Discord, Telegram, Tox, and Pidgin. It also gathers information about the victim&#39;s machine. Several anti-analysis methods are applied while strings are obfuscated with base64 and RC4."/>
+<meta name="application-name" content="Malware Analysis">
+<meta name="apple-mobile-web-app-title" content="Malware Analysis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://glyc3rius.github.io/2023/10/stealc/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Stealc Malware Analysis",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/glyc3rius.github.io\/2023\/10\/stealc\/"
+        },"genre": "posts","wordcount":  3486 ,
+        "url": "https:\/\/glyc3rius.github.io\/2023\/10\/stealc\/","datePublished": "2023-10-03T00:00:00+00:00","dateModified": "2023-10-03T00:00:00+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Glyc3rius"
+            },"description": "This sample of Stealc infostealer targets browsers, extensions, desktop cryptocurrency wallets and applications such as Outlook, Steam, Discord, Telegram, Tox, and Pidgin. It also gathers information about the victim's machine. Several anti-analysis methods are applied while strings are obfuscated with base64 and RC4."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Glyc3rius"><span class="header-title-pre"><i class='fa-solid fa-viruses' aria-hidden='true'></i></span>Glyc3rius</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="Posts"><i class="fa-solid fa-envelopes-bulk"></i>  All Posts</a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Glyc3rius"><span class="header-title-pre"><i class='fa-solid fa-viruses' aria-hidden='true'></i></span>Glyc3rius</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="Posts"><i class="fa-solid fa-envelopes-bulk"></i>All Posts</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Stealc Malware Analysis</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://glyc3rius.github.io" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Glyc3rius</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-10-03">2023-10-03</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3486 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;17 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview"><strong>Overview</strong></a></li>
+    <li><a href="#string-obfuscation"><strong>String Obfuscation</strong></a></li>
+    <li><a href="#dynamic-import-with-peb"><strong>Dynamic Import with PEB</strong></a></li>
+    <li><a href="#anti-analysis-and-evasion-methods"><strong>Anti-analysis and Evasion Methods</strong></a>
+      <ul>
+        <li><a href="#screen-size-of-monitor"><strong>Screen Size of Monitor</strong></a></li>
+        <li><a href="#number-of-processor-cores"><strong>Number of Processor Cores</strong></a></li>
+        <li><a href="#checking-memory-usage"><strong>Checking Memory Usage</strong></a></li>
+        <li><a href="#memory-allocation"><strong>Memory Allocation</strong></a></li>
+        <li><a href="#language-check"><strong>Language Check</strong></a></li>
+        <li><a href="#anti-emulation"><strong>Anti-Emulation</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#dropped-dlls"><strong>Dropped DLLs</strong></a></li>
+    <li><a href="#browsers"><strong>Browsers</strong></a>
+      <ul>
+        <li><a href="#chromium-based"><strong>Chromium-based</strong></a>
+          <ul>
+            <li>
+              <ul>
+                <li><a href="#key-decryption-method"><strong>Key Decryption Method</strong></a></li>
+                <li><a href="#logins"><strong>Logins</strong></a></li>
+                <li><a href="#cookies"><strong>Cookies</strong></a></li>
+                <li><a href="#autofill"><strong>Autofill</strong></a></li>
+                <li><a href="#history"><strong>History</strong></a></li>
+                <li><a href="#credit-cards"><strong>Credit Cards</strong></a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#mozilla-based"><strong>Mozilla-based</strong></a>
+          <ul>
+            <li>
+              <ul>
+                <li><a href="#logins-1"><strong>Logins</strong></a></li>
+                <li><a href="#cookies-1"><strong>Cookies</strong></a></li>
+                <li><a href="#autofills"><strong>Autofills</strong></a></li>
+                <li><a href="#history-1"><strong>History</strong></a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#browser-extensions"><strong>Browser Extensions</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#desktop-cryptocurrency-wallets"><strong>Desktop Cryptocurrency Wallets</strong></a></li>
+    <li><a href="#applications"><strong>Applications</strong></a>
+      <ul>
+        <li><a href="#outlook"><strong>Outlook</strong></a></li>
+        <li><a href="#steam"><strong>Steam</strong></a></li>
+        <li><a href="#discord"><strong>Discord</strong></a></li>
+        <li><a href="#telegram"><strong>Telegram</strong></a></li>
+        <li><a href="#tox"><strong>Tox</strong></a></li>
+        <li><a href="#pidgin"><strong>Pidgin</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#victims-machine-information"><strong>Victim&rsquo;s Machine Information</strong></a></li>
+    <li><a href="#final-stages"><strong>Final Stages</strong></a>
+      <ul>
+        <li><a href="#c2-communication"><strong>C2 Communication</strong></a></li>
+        <li><a href="#removing-itself-from-the-victims-machine"><strong>Removing Itself From The Victim&rsquo;s Machine</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#iocs"><strong>IOCs</strong></a></li>
+    <li><a href="#references"><strong>References</strong></a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="overview"><strong>Overview</strong></h2>
+<p>Stealc is just a typical information stealer written in C. The malware encodes/encrypts its strings with base64 and RC4 methods and imports its functions with the help of PEB while several anti-analysis and evasion techniques are also applied. It drops 7 additional third-party DLLs (such as <code>sqlite3.dll</code>) from the C2 server. The stealing procedure targets browsers, browser extensions, desktop cryptocurrency wallets and applications such as Outlook, Steam, Discord, Telegram, Tox, and Pidgin. It gathers information about the victim&rsquo;s machine as well and after its all done, removes itself and the dropped DLLs from the computer.</p>
+<p>The analysed sample&rsquo;s SHA-256 is <code>e978871a3a76c83f94e589fd22a91c7c1a58175ca5d2110b95d71b7805b25b8d</code>.</p>
+<h2 id="string-obfuscation"><strong>String Obfuscation</strong></h2>
+<p>Inside the disassembler, we discover two functions which contain likely important strings that are encoded with base64. After decoding them, we can conclude that an encryption mechanism is used as well. In search of it, an RC4 algorithm is found with its hard-coded key: <code>52129722198130874989795557381261264814249348323986</code>. I decrypted these strings with a simple <a href="https://github.com/Glyc3rius/python-scripts/blob/cd6b9192daaf5787fcdd06cb31fdb7f3468bbd89/Stealc/stealc_string_decryption.ipynb" target="_blank" rel="noopener noreffer ">python script</a>. The deobfuscated strings are:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span><span class="lnt">260
+</span><span class="lnt">261
+</span><span class="lnt">262
+</span><span class="lnt">263
+</span><span class="lnt">264
+</span><span class="lnt">265
+</span><span class="lnt">266
+</span><span class="lnt">267
+</span><span class="lnt">268
+</span><span class="lnt">269
+</span><span class="lnt">270
+</span><span class="lnt">271
+</span><span class="lnt">272
+</span><span class="lnt">273
+</span><span class="lnt">274
+</span><span class="lnt">275
+</span><span class="lnt">276
+</span><span class="lnt">277
+</span><span class="lnt">278
+</span><span class="lnt">279
+</span><span class="lnt">280
+</span><span class="lnt">281
+</span><span class="lnt">282
+</span><span class="lnt">283
+</span><span class="lnt">284
+</span><span class="lnt">285
+</span><span class="lnt">286
+</span><span class="lnt">287
+</span><span class="lnt">288
+</span><span class="lnt">289
+</span><span class="lnt">290
+</span><span class="lnt">291
+</span><span class="lnt">292
+</span><span class="lnt">293
+</span><span class="lnt">294
+</span><span class="lnt">295
+</span><span class="lnt">296
+</span><span class="lnt">297
+</span><span class="lnt">298
+</span><span class="lnt">299
+</span><span class="lnt">300
+</span><span class="lnt">301
+</span><span class="lnt">302
+</span><span class="lnt">303
+</span><span class="lnt">304
+</span><span class="lnt">305
+</span><span class="lnt">306
+</span><span class="lnt">307
+</span><span class="lnt">308
+</span><span class="lnt">309
+</span><span class="lnt">310
+</span><span class="lnt">311
+</span><span class="lnt">312
+</span><span class="lnt">313
+</span><span class="lnt">314
+</span><span class="lnt">315
+</span><span class="lnt">316
+</span><span class="lnt">317
+</span><span class="lnt">318
+</span><span class="lnt">319
+</span><span class="lnt">320
+</span><span class="lnt">321
+</span><span class="lnt">322
+</span><span class="lnt">323
+</span><span class="lnt">324
+</span><span class="lnt">325
+</span><span class="lnt">326
+</span><span class="lnt">327
+</span><span class="lnt">328
+</span><span class="lnt">329
+</span><span class="lnt">330
+</span><span class="lnt">331
+</span><span class="lnt">332
+</span><span class="lnt">333
+</span><span class="lnt">334
+</span><span class="lnt">335
+</span><span class="lnt">336
+</span><span class="lnt">337
+</span><span class="lnt">338
+</span><span class="lnt">339
+</span><span class="lnt">340
+</span><span class="lnt">341
+</span><span class="lnt">342
+</span><span class="lnt">343
+</span><span class="lnt">344
+</span><span class="lnt">345
+</span><span class="lnt">346
+</span><span class="lnt">347
+</span><span class="lnt">348
+</span><span class="lnt">349
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> 11
+</span></span><span class="line"><span class="cl"> 20
+</span></span><span class="line"><span class="cl"> 23
+</span></span><span class="line"><span class="cl"> GetProcAddress
+</span></span><span class="line"><span class="cl"> LoadLibraryA
+</span></span><span class="line"><span class="cl"> lstrcatA
+</span></span><span class="line"><span class="cl"> OpenEventA
+</span></span><span class="line"><span class="cl"> CreateEventA
+</span></span><span class="line"><span class="cl"> CloseHandle
+</span></span><span class="line"><span class="cl"> Sleep
+</span></span><span class="line"><span class="cl"> GetUserDefaultLangID
+</span></span><span class="line"><span class="cl"> VirtualAllocExNuma
+</span></span><span class="line"><span class="cl"> VirtualFree
+</span></span><span class="line"><span class="cl"> GetSystemInfo
+</span></span><span class="line"><span class="cl"> VirtualAlloc
+</span></span><span class="line"><span class="cl"> HeapAlloc
+</span></span><span class="line"><span class="cl"> GetComputerNameA
+</span></span><span class="line"><span class="cl"> lstrcpyA
+</span></span><span class="line"><span class="cl"> GetProcessHeap
+</span></span><span class="line"><span class="cl"> GetCurrentProcess
+</span></span><span class="line"><span class="cl"> lstrlenA
+</span></span><span class="line"><span class="cl"> ExitProcess
+</span></span><span class="line"><span class="cl"> GlobalMemoryStatusEx
+</span></span><span class="line"><span class="cl"> GetSystemTime
+</span></span><span class="line"><span class="cl"> SystemTimeToFileTime
+</span></span><span class="line"><span class="cl"> advapi32.dll
+</span></span><span class="line"><span class="cl"> gdi32.dll
+</span></span><span class="line"><span class="cl"> user32.dll
+</span></span><span class="line"><span class="cl"> crypt32.dll
+</span></span><span class="line"><span class="cl"> ntdll.dll
+</span></span><span class="line"><span class="cl"> GetUserNameA
+</span></span><span class="line"><span class="cl"> CreateDCA
+</span></span><span class="line"><span class="cl"> GetDeviceCaps
+</span></span><span class="line"><span class="cl"> ReleaseDC
+</span></span><span class="line"><span class="cl"> CryptStringToBinaryA
+</span></span><span class="line"><span class="cl"> sscanf
+</span></span><span class="line"><span class="cl"> VMwareVMware
+</span></span><span class="line"><span class="cl"> HAL9TH
+</span></span><span class="line"><span class="cl"> JohnDoe
+</span></span><span class="line"><span class="cl"> DISPLAY
+</span></span><span class="line"><span class="cl"> %hu/%hu/%hu
+</span></span><span class="line"><span class="cl"> http://185.106.94.206
+</span></span><span class="line"><span class="cl"> /4e815d9f1ec482dd.php
+</span></span><span class="line"><span class="cl"> /49171d9bb28d893a/
+</span></span><span class="line"><span class="cl"> GoogleMaps
+</span></span><span class="line"><span class="cl"> GetEnvironmentVariableA
+</span></span><span class="line"><span class="cl"> GetFileAttributesA
+</span></span><span class="line"><span class="cl"> GlobalLock
+</span></span><span class="line"><span class="cl"> HeapFree
+</span></span><span class="line"><span class="cl"> GetFileSize
+</span></span><span class="line"><span class="cl"> GlobalSize
+</span></span><span class="line"><span class="cl"> CreateToolhelp32Snapshot
+</span></span><span class="line"><span class="cl"> IsWow64Process
+</span></span><span class="line"><span class="cl"> Process32Next
+</span></span><span class="line"><span class="cl"> GetLocalTime
+</span></span><span class="line"><span class="cl"> FreeLibrary
+</span></span><span class="line"><span class="cl"> GetTimeZoneInformation
+</span></span><span class="line"><span class="cl"> GetSystemPowerStatus
+</span></span><span class="line"><span class="cl"> GetVolumeInformationA
+</span></span><span class="line"><span class="cl"> GetWindowsDirectoryA
+</span></span><span class="line"><span class="cl"> Process32First
+</span></span><span class="line"><span class="cl"> GetLocaleInfoA
+</span></span><span class="line"><span class="cl"> GetUserDefaultLocaleName
+</span></span><span class="line"><span class="cl"> GetModuleFileNameA
+</span></span><span class="line"><span class="cl"> DeleteFileA
+</span></span><span class="line"><span class="cl"> FindNextFileA
+</span></span><span class="line"><span class="cl"> LocalFree
+</span></span><span class="line"><span class="cl"> FindClose
+</span></span><span class="line"><span class="cl"> SetEnvironmentVariableA
+</span></span><span class="line"><span class="cl"> LocalAlloc
+</span></span><span class="line"><span class="cl"> GetFileSizeEx
+</span></span><span class="line"><span class="cl"> ReadFile
+</span></span><span class="line"><span class="cl"> SetFilePointer
+</span></span><span class="line"><span class="cl"> WriteFile
+</span></span><span class="line"><span class="cl"> CreateFileA
+</span></span><span class="line"><span class="cl"> FindFirstFileA
+</span></span><span class="line"><span class="cl"> CopyFileA
+</span></span><span class="line"><span class="cl"> VirtualProtect
+</span></span><span class="line"><span class="cl"> GetLogicalProcessorInformationEx
+</span></span><span class="line"><span class="cl"> GetLastError
+</span></span><span class="line"><span class="cl"> lstrcpynA
+</span></span><span class="line"><span class="cl"> MultiByteToWideChar
+</span></span><span class="line"><span class="cl"> GlobalFree
+</span></span><span class="line"><span class="cl"> WideCharToMultiByte
+</span></span><span class="line"><span class="cl"> GlobalAlloc
+</span></span><span class="line"><span class="cl"> OpenProcess
+</span></span><span class="line"><span class="cl"> TerminateProcess
+</span></span><span class="line"><span class="cl"> GetCurrentProcessId
+</span></span><span class="line"><span class="cl"> gdiplus.dll
+</span></span><span class="line"><span class="cl"> ole32.dll
+</span></span><span class="line"><span class="cl"> bcrypt.dll
+</span></span><span class="line"><span class="cl"> wininet.dll
+</span></span><span class="line"><span class="cl"> shlwapi.dll
+</span></span><span class="line"><span class="cl"> shell32.dll
+</span></span><span class="line"><span class="cl"> psapi.dll
+</span></span><span class="line"><span class="cl"> rstrtmgr.dll
+</span></span><span class="line"><span class="cl"> CreateCompatibleBitmap
+</span></span><span class="line"><span class="cl"> SelectObject
+</span></span><span class="line"><span class="cl"> BitBlt
+</span></span><span class="line"><span class="cl"> DeleteObject
+</span></span><span class="line"><span class="cl"> CreateCompatibleDC
+</span></span><span class="line"><span class="cl"> GdipGetImageEncodersSize
+</span></span><span class="line"><span class="cl"> GdipGetImageEncoders
+</span></span><span class="line"><span class="cl"> GdipCreateBitmapFromHBITMAP
+</span></span><span class="line"><span class="cl"> GdiplusStartup
+</span></span><span class="line"><span class="cl"> GdiplusShutdown
+</span></span><span class="line"><span class="cl"> GdipSaveImageToStream
+</span></span><span class="line"><span class="cl"> GdipDisposeImage
+</span></span><span class="line"><span class="cl"> GdipFree
+</span></span><span class="line"><span class="cl"> GetHGlobalFromStream
+</span></span><span class="line"><span class="cl"> CreateStreamOnHGlobal
+</span></span><span class="line"><span class="cl"> CoUninitialize
+</span></span><span class="line"><span class="cl"> CoInitialize
+</span></span><span class="line"><span class="cl"> CoCreateInstance
+</span></span><span class="line"><span class="cl"> BCryptGenerateSymmetricKey
+</span></span><span class="line"><span class="cl"> BCryptCloseAlgorithmProvider
+</span></span><span class="line"><span class="cl"> BCryptDecrypt
+</span></span><span class="line"><span class="cl"> BCryptSetProperty
+</span></span><span class="line"><span class="cl"> BCryptDestroyKey
+</span></span><span class="line"><span class="cl"> BCryptOpenAlgorithmProvider
+</span></span><span class="line"><span class="cl"> GetWindowRect
+</span></span><span class="line"><span class="cl"> GetDesktopWindow
+</span></span><span class="line"><span class="cl"> GetDC
+</span></span><span class="line"><span class="cl"> CloseWindow
+</span></span><span class="line"><span class="cl"> wsprintfA
+</span></span><span class="line"><span class="cl"> EnumDisplayDevicesA
+</span></span><span class="line"><span class="cl"> GetKeyboardLayoutList
+</span></span><span class="line"><span class="cl"> CharToOemW
+</span></span><span class="line"><span class="cl"> wsprintfW
+</span></span><span class="line"><span class="cl"> RegQueryValueExA
+</span></span><span class="line"><span class="cl"> RegEnumKeyExA
+</span></span><span class="line"><span class="cl"> RegOpenKeyExA
+</span></span><span class="line"><span class="cl"> RegCloseKey
+</span></span><span class="line"><span class="cl"> RegEnumValueA
+</span></span><span class="line"><span class="cl"> CryptBinaryToStringA
+</span></span><span class="line"><span class="cl"> CryptUnprotectData
+</span></span><span class="line"><span class="cl"> SHGetFolderPathA
+</span></span><span class="line"><span class="cl"> ShellExecuteExA
+</span></span><span class="line"><span class="cl"> InternetOpenUrlA
+</span></span><span class="line"><span class="cl"> InternetConnectA
+</span></span><span class="line"><span class="cl"> InternetCloseHandle
+</span></span><span class="line"><span class="cl"> InternetOpenA
+</span></span><span class="line"><span class="cl"> HttpSendRequestA
+</span></span><span class="line"><span class="cl"> HttpOpenRequestA
+</span></span><span class="line"><span class="cl"> InternetReadFile
+</span></span><span class="line"><span class="cl"> InternetCrackUrlA
+</span></span><span class="line"><span class="cl"> StrCmpCA
+</span></span><span class="line"><span class="cl"> StrStrA
+</span></span><span class="line"><span class="cl"> StrCmpCW
+</span></span><span class="line"><span class="cl"> PathMatchSpecA
+</span></span><span class="line"><span class="cl"> GetModuleFileNameExA
+</span></span><span class="line"><span class="cl"> RmStartSession
+</span></span><span class="line"><span class="cl"> RmRegisterResources
+</span></span><span class="line"><span class="cl"> RmGetList
+</span></span><span class="line"><span class="cl"> RmEndSession
+</span></span><span class="line"><span class="cl"> sqlite3_open
+</span></span><span class="line"><span class="cl"> sqlite3_prepare_v2
+</span></span><span class="line"><span class="cl"> sqlite3_step
+</span></span><span class="line"><span class="cl"> sqlite3_column_text
+</span></span><span class="line"><span class="cl"> sqlite3_finalize
+</span></span><span class="line"><span class="cl"> sqlite3_close
+</span></span><span class="line"><span class="cl"> sqlite3_column_bytes
+</span></span><span class="line"><span class="cl"> sqlite3_column_blob
+</span></span><span class="line"><span class="cl"> encrypted_key
+</span></span><span class="line"><span class="cl"> PATH
+</span></span><span class="line"><span class="cl"> C:\\ProgramData\\nss3.dll
+</span></span><span class="line"><span class="cl"> NSS_Init
+</span></span><span class="line"><span class="cl"> NSS_Shutdown
+</span></span><span class="line"><span class="cl"> PK11_GetInternalKeySlot
+</span></span><span class="line"><span class="cl"> PK11_FreeSlot
+</span></span><span class="line"><span class="cl"> PK11_Authenticate
+</span></span><span class="line"><span class="cl"> PK11SDR_Decrypt
+</span></span><span class="line"><span class="cl"> C:\\ProgramData\\
+</span></span><span class="line"><span class="cl"> url: 
+</span></span><span class="line"><span class="cl"> SELECT origin_url, username_value, password_value FROM logins
+</span></span><span class="line"><span class="cl"> browser: 
+</span></span><span class="line"><span class="cl"> profile: 
+</span></span><span class="line"><span class="cl"> login: 
+</span></span><span class="line"><span class="cl"> password: 
+</span></span><span class="line"><span class="cl"> Opera
+</span></span><span class="line"><span class="cl"> OperaGX
+</span></span><span class="line"><span class="cl"> Network
+</span></span><span class="line"><span class="cl"> cookies
+</span></span><span class="line"><span class="cl"> .txt
+</span></span><span class="line"><span class="cl"> TRUE
+</span></span><span class="line"><span class="cl"> SELECT HOST_KEY, is_httponly, path, is_secure, (expires_utc/1000000)-11644480800, name, encrypted_value from cookies
+</span></span><span class="line"><span class="cl"> FALSE
+</span></span><span class="line"><span class="cl"> autofill
+</span></span><span class="line"><span class="cl"> SELECT name, value FROM autofill
+</span></span><span class="line"><span class="cl"> history
+</span></span><span class="line"><span class="cl"> SELECT url FROM urls LIMIT 1000
+</span></span><span class="line"><span class="cl"> cc
+</span></span><span class="line"><span class="cl"> name: 
+</span></span><span class="line"><span class="cl"> SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted FROM credit_cards
+</span></span><span class="line"><span class="cl"> month: 
+</span></span><span class="line"><span class="cl"> year: 
+</span></span><span class="line"><span class="cl"> card: 
+</span></span><span class="line"><span class="cl"> Cookies
+</span></span><span class="line"><span class="cl"> Login Data
+</span></span><span class="line"><span class="cl"> Web Data
+</span></span><span class="line"><span class="cl"> History
+</span></span><span class="line"><span class="cl"> logins.json
+</span></span><span class="line"><span class="cl"> formSubmitURL
+</span></span><span class="line"><span class="cl"> usernameField
+</span></span><span class="line"><span class="cl"> encryptedUsername
+</span></span><span class="line"><span class="cl"> encryptedPassword
+</span></span><span class="line"><span class="cl"> guid
+</span></span><span class="line"><span class="cl"> SELECT host, isHttpOnly, path, isSecure, expiry, name, value FROM moz_cookies
+</span></span><span class="line"><span class="cl"> SELECT fieldname, value FROM moz_formhistory
+</span></span><span class="line"><span class="cl"> SELECT url FROM moz_places LIMIT 1000
+</span></span><span class="line"><span class="cl"> cookies.sqlite
+</span></span><span class="line"><span class="cl"> formhistory.sqlite
+</span></span><span class="line"><span class="cl"> places.sqlite
+</span></span><span class="line"><span class="cl"> plugins
+</span></span><span class="line"><span class="cl"> Local Extension Settings
+</span></span><span class="line"><span class="cl"> Sync Extension Settings
+</span></span><span class="line"><span class="cl"> IndexedDB
+</span></span><span class="line"><span class="cl"> Opera Stable
+</span></span><span class="line"><span class="cl"> Opera GX Stable
+</span></span><span class="line"><span class="cl"> CURRENT
+</span></span><span class="line"><span class="cl"> chrome-extension_
+</span></span><span class="line"><span class="cl"> _0.indexeddb.leveldb
+</span></span><span class="line"><span class="cl"> Local State
+</span></span><span class="line"><span class="cl"> profiles.ini
+</span></span><span class="line"><span class="cl"> chrome
+</span></span><span class="line"><span class="cl"> opera
+</span></span><span class="line"><span class="cl"> firefox
+</span></span><span class="line"><span class="cl"> wallets
+</span></span><span class="line"><span class="cl"> %08lX%04lX%lu
+</span></span><span class="line"><span class="cl"> SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion
+</span></span><span class="line"><span class="cl"> ProductName
+</span></span><span class="line"><span class="cl"> x32
+</span></span><span class="line"><span class="cl"> x64
+</span></span><span class="line"><span class="cl"> %d/%d/%d %d:%d:%d
+</span></span><span class="line"><span class="cl"> HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0
+</span></span><span class="line"><span class="cl"> ProcessorNameString
+</span></span><span class="line"><span class="cl"> DisplayName
+</span></span><span class="line"><span class="cl"> SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall
+</span></span><span class="line"><span class="cl"> DisplayVersion
+</span></span><span class="line"><span class="cl"> Network Info:
+</span></span><span class="line"><span class="cl"> \t- IP: IP?
+</span></span><span class="line"><span class="cl"> \t- Country: ISO?
+</span></span><span class="line"><span class="cl"> System Summary:
+</span></span><span class="line"><span class="cl"> \t- HWID: 
+</span></span><span class="line"><span class="cl"> \t- OS: 
+</span></span><span class="line"><span class="cl"> \t- Architecture: 
+</span></span><span class="line"><span class="cl"> \t- UserName: 
+</span></span><span class="line"><span class="cl"> \t- Computer Name: 
+</span></span><span class="line"><span class="cl"> \t- Local Time: 
+</span></span><span class="line"><span class="cl"> \t- UTC: 
+</span></span><span class="line"><span class="cl"> \t- Language: 
+</span></span><span class="line"><span class="cl"> \t- Keyboards: 
+</span></span><span class="line"><span class="cl"> \t- Laptop: 
+</span></span><span class="line"><span class="cl"> \t- Running Path: 
+</span></span><span class="line"><span class="cl"> \t- CPU: 
+</span></span><span class="line"><span class="cl"> \t- Threads: 
+</span></span><span class="line"><span class="cl"> \t- Cores: 
+</span></span><span class="line"><span class="cl"> \t- RAM: 
+</span></span><span class="line"><span class="cl"> \t- Display Resolution: 
+</span></span><span class="line"><span class="cl"> \t- GPU:
+</span></span><span class="line"><span class="cl"> User Agents:
+</span></span><span class="line"><span class="cl"> Installed Apps:
+</span></span><span class="line"><span class="cl"> All Users:
+</span></span><span class="line"><span class="cl"> Current User:
+</span></span><span class="line"><span class="cl"> Process List:
+</span></span><span class="line"><span class="cl"> system_info.txt
+</span></span><span class="line"><span class="cl"> freebl3.dll
+</span></span><span class="line"><span class="cl"> mozglue.dll
+</span></span><span class="line"><span class="cl"> msvcp140.dll
+</span></span><span class="line"><span class="cl"> nss3.dll
+</span></span><span class="line"><span class="cl"> softokn3.dll
+</span></span><span class="line"><span class="cl"> vcruntime140.dll
+</span></span><span class="line"><span class="cl"> \\Temp\\
+</span></span><span class="line"><span class="cl"> .exe
+</span></span><span class="line"><span class="cl"> runas
+</span></span><span class="line"><span class="cl"> open
+</span></span><span class="line"><span class="cl"> /c start 
+</span></span><span class="line"><span class="cl"> %DESKTOP%
+</span></span><span class="line"><span class="cl"> %APPDATA%
+</span></span><span class="line"><span class="cl"> %LOCALAPPDATA%
+</span></span><span class="line"><span class="cl"> %USERPROFILE%
+</span></span><span class="line"><span class="cl"> %DOCUMENTS%
+</span></span><span class="line"><span class="cl"> %PROGRAMFILES%
+</span></span><span class="line"><span class="cl"> %PROGRAMFILES_86%
+</span></span><span class="line"><span class="cl"> %RECENT%
+</span></span><span class="line"><span class="cl"> *.lnk
+</span></span><span class="line"><span class="cl"> files
+</span></span><span class="line"><span class="cl"> \\discord\\
+</span></span><span class="line"><span class="cl"> \\Local Storage\\leveldb\\CURRENT
+</span></span><span class="line"><span class="cl"> \\Local Storage\\leveldb
+</span></span><span class="line"><span class="cl"> \\Telegram Desktop\\
+</span></span><span class="line"><span class="cl"> key_datas
+</span></span><span class="line"><span class="cl"> D877F783D5D3EF8C*
+</span></span><span class="line"><span class="cl"> map*
+</span></span><span class="line"><span class="cl"> A7FDF864FBC10B77*
+</span></span><span class="line"><span class="cl"> A92DAA6EA6F891F2*
+</span></span><span class="line"><span class="cl"> F8806DD0C461824F*
+</span></span><span class="line"><span class="cl"> Telegram
+</span></span><span class="line"><span class="cl"> Tox
+</span></span><span class="line"><span class="cl"> *.tox
+</span></span><span class="line"><span class="cl"> *.ini
+</span></span><span class="line"><span class="cl"> Password
+</span></span><span class="line"><span class="cl"> Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows Messaging Subsystem\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676\\
+</span></span><span class="line"><span class="cl"> Software\\Microsoft\\Office\\13.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676\\
+</span></span><span class="line"><span class="cl"> Pidgin
+</span></span><span class="line"><span class="cl"> Software\\Microsoft\\Office\\14.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676\\
+</span></span><span class="line"><span class="cl"> accounts.xml
+</span></span><span class="line"><span class="cl"> Software\\Microsoft\\Office\\15.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676\\
+</span></span><span class="line"><span class="cl"> dQw4w9WgXcQ
+</span></span><span class="line"><span class="cl"> Software\\Microsoft\\Office\\16.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676\\
+</span></span><span class="line"><span class="cl"> ssfn*
+</span></span><span class="line"><span class="cl"> Software\\Microsoft\\Windows Messaging Subsystem\\Profiles\\9375CFF0413111d3B88A00104B2A6676\\
+</span></span><span class="line"><span class="cl"> 00000001
+</span></span><span class="line"><span class="cl"> 00000002
+</span></span><span class="line"><span class="cl"> 00000003
+</span></span><span class="line"><span class="cl"> 00000004
+</span></span><span class="line"><span class="cl"> \\Outlook\\accounts.txt
+</span></span><span class="line"><span class="cl"> \\.purple\\
+</span></span><span class="line"><span class="cl"> token: 
+</span></span><span class="line"><span class="cl"> Software\\Valve\\Steam
+</span></span><span class="line"><span class="cl"> SteamPath
+</span></span><span class="line"><span class="cl"> \\config\\
+</span></span><span class="line"><span class="cl"> config.vdf
+</span></span><span class="line"><span class="cl"> DialogConfig.vdf
+</span></span><span class="line"><span class="cl"> DialogConfigOverlay*.vdf
+</span></span><span class="line"><span class="cl"> libraryfolders.vdf
+</span></span><span class="line"><span class="cl"> loginusers.vdf
+</span></span><span class="line"><span class="cl"> \\Steam\\
+</span></span><span class="line"><span class="cl"> sqlite3.dll
+</span></span><span class="line"><span class="cl"> browsers
+</span></span><span class="line"><span class="cl"> done
+</span></span><span class="line"><span class="cl"> soft
+</span></span><span class="line"><span class="cl"> \\Discord\\tokens.txt
+</span></span><span class="line"><span class="cl"> /c timeout /t 5 &amp; del /f /q &#34;
+</span></span><span class="line"><span class="cl"> &#34; &amp; del &#34;C:\\ProgramData\\*.dll&#34;&#34; &amp; exit
+</span></span><span class="line"><span class="cl"> C:\\Windows\\system32\\cmd.exe
+</span></span><span class="line"><span class="cl"> https
+</span></span><span class="line"><span class="cl"> Content-Type: multipart/form-data; boundary=----
+</span></span><span class="line"><span class="cl"> POST
+</span></span><span class="line"><span class="cl"> HTTP/1.1
+</span></span><span class="line"><span class="cl"> Content-Disposition: form-data; name=&#34;
+</span></span><span class="line"><span class="cl"> hwid
+</span></span><span class="line"><span class="cl"> build
+</span></span><span class="line"><span class="cl"> token
+</span></span><span class="line"><span class="cl"> file_name
+</span></span><span class="line"><span class="cl"> file
+</span></span><span class="line"><span class="cl"> message
+</span></span><span class="line"><span class="cl"> ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
+</span></span><span class="line"><span class="cl"> screenshot.jpg
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="dynamic-import-with-peb"><strong>Dynamic Import with PEB</strong></h2>
+<p>Stealc uses the <strong>Process Environment Block (PEB)</strong> to dynamically load libraries and to avoid antivirus detection. In this case, the malware uses the <strong>PEB</strong> as an obfuscation technique to hide Windows API libraries and their imported functions.</p>
+<p>Accessing the PEB structure can be described with the table below:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Offset</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.</td>
+<td><code>FS:[offset ProcessEnvironmentBlock]</code></td>
+<td>The equivalent of <code>FS:[0x30]</code>, that means we access the <strong>PEB</strong> directly</td>
+</tr>
+<tr>
+<td>2.</td>
+<td><code>0xc</code></td>
+<td>Access to the <code>LoaderData</code></td>
+</tr>
+<tr>
+<td>3.</td>
+<td><code>0xc</code></td>
+<td>Access to the <code>InLoadOrderModuleList</code></td>
+</tr>
+<tr>
+<td>4.</td>
+<td><code>0x18</code></td>
+<td>Access to the <code>DllBase</code></td>
+</tr>
+</tbody>
+</table>
+<p>Inside the <code>DllBase</code>, the malware looks for the base address of <code>kernel32.dll</code>. After that it loads the <code>GetProcAddress</code> function that is used to dynamically resolve the address of the <code>LoadLibraryA</code> function. Then, <code>LoadLibraryA</code> loads additional DLLs that the malware can utilize and their functions are also called with <code>GetProcAddress</code> dynamically.</p>
+<h2 id="anti-analysis-and-evasion-methods"><strong>Anti-analysis and Evasion Methods</strong></h2>
+<h3 id="screen-size-of-monitor"><strong>Screen Size of Monitor</strong></h3>
+<p>First, Stealc checks the screen size of the victim&rsquo;s monitor and compares the <code>GetDeviceCaps</code> function&rsquo;s return value to 666 which represents the screen width. In case the screen width is below 666 pixels, the malware stops execution. This is a technique to avoid virtual machines with lower resolutions which are not expected in a regular environment.</p>
+<h3 id="number-of-processor-cores"><strong>Number of Processor Cores</strong></h3>
+<p>It checks whether the victim&rsquo;s machine has a processor with at least 2 cores. If it doesn&rsquo;t, the malware stops execution, since it assumes that the machine is in a virtualized environment.</p>
+<h3 id="checking-memory-usage"><strong>Checking Memory Usage</strong></h3>
+<p>With <code>GlobalMemoryStatusEx</code> , the malware retrieves information about the system&rsquo;s physical and virtual memory. This ensures that the malware is not running under a virtual machine. If it is under 1111 MB of memory, the malware calls the <code>ExitProcess</code> function.</p>
+<h3 id="memory-allocation"><strong>Memory Allocation</strong></h3>
+<p>The stealer also tries to allocate memory with <code>VirtualAllocExNuma</code>. It is an anti-emulator technique, since an AV emulator can&rsquo;t perform this kind of allocation making the API call fail. If the allocation doesn&rsquo;t happen, the malware exits immediately.</p>
+<h3 id="language-check"><strong>Language Check</strong></h3>
+<p>Stealc checks the language ID of the current user with the <code>GetUserDefaultLangID</code> function and if they return one of the hexadecimal values from the table below, then the malware exits and won&rsquo;t run on the victim&rsquo;s computer.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Language ID (Hex)</strong></th>
+<th><strong>Country</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x419</td>
+<td>Russia</td>
+</tr>
+<tr>
+<td>0x422</td>
+<td>Ukraine</td>
+</tr>
+<tr>
+<td>0x423</td>
+<td>Belarus</td>
+</tr>
+<tr>
+<td>0x43F</td>
+<td>Kazakhstan</td>
+</tr>
+<tr>
+<td>0x443</td>
+<td>Uzbekistan</td>
+</tr>
+</tbody>
+</table>
+<h3 id="anti-emulation"><strong>Anti-Emulation</strong></h3>
+<p>It calls <code>GetComputerNameA</code> with <strong>HAL9TH</strong> parameter and <code>GetUserNameA</code> with <strong>JohnDoe</strong>. Both of these parameters are used by Microsoft Defender emulator and they are compared to the victim&rsquo;s computer name and username. It checks whether the malware is in a virtual or sandbox environment.</p>
+<h2 id="dropped-dlls"><strong>Dropped DLLs</strong></h2>
+<p>Before the malware starts its information stealing procedure, it downloads 7 DLLs from the C2 server: <code>hxxp://185[.]106[.]94[.]206/49171d9bb28d893a/</code>. These DLLS are: <code>sqlite3.dll</code>, <code>nss3.dll</code>, <code>freebl3.dll</code>, <code>mozglue.dll</code>, <code>msvcp140.dll</code>, <code>softokn3.dll</code>, <code>vcruntime140.dll</code>. All of them are valid third-party DLLs and they are placed within the <code>C:\ProgramData\</code> folder and all the stolen data is also stored under this path. The <code>sqlite3.dll</code> and <code>nss3.dll</code> are essential for the information stealing that Stealc performs. The imported functions of these two and their usage are represented in the tables below.</p>
+<p><code>sqlite3.dll</code> which is used to interact with SQLite databases in C/C++ applications:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Function</strong></th>
+<th><strong>Usage</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sqlite3_open</code></td>
+<td>Opens or creates a new SQLite database file</td>
+</tr>
+<tr>
+<td><code>sqlite3_prepare_v2</code></td>
+<td>Compiles an SQL statement into a prepared statement</td>
+</tr>
+<tr>
+<td><code>sqlite3_step</code></td>
+<td>Executes a prepared statement one step at a time</td>
+</tr>
+<tr>
+<td><code>sqlite3_column_text</code></td>
+<td>Retrieves the text value of a column in the current row of the result set</td>
+</tr>
+<tr>
+<td><code>sqlite3_finalize</code></td>
+<td>Finalizes a prepared statement and releases associated resources</td>
+</tr>
+<tr>
+<td><code>sqlite3_close</code></td>
+<td>Closes the SQLite database connection</td>
+</tr>
+<tr>
+<td><code>sqlite3_column_bytes</code></td>
+<td>Retrieves the number of bytes in a column value in the current row of the result set</td>
+</tr>
+<tr>
+<td><code>sqlite3_column_blob</code></td>
+<td>Retrieves a blob (binary) value from a column in the current row of the result set</td>
+</tr>
+</tbody>
+</table>
+<p><code>nss3.dll</code> which is associated with Firefox:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Function</strong></th>
+<th><strong>Usage</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NSS_Init</code></td>
+<td>Initializes the NSS library</td>
+</tr>
+<tr>
+<td><code>NSS_Shutdown</code></td>
+<td>Cleans up and releases resources acquired during NSS initialization</td>
+</tr>
+<tr>
+<td><code>PK11_GetInternalKeySlot</code></td>
+<td>Obtains a cryptographic slot</td>
+</tr>
+<tr>
+<td><code>PK11_FreeSlot</code></td>
+<td>Releases the slot</td>
+</tr>
+<tr>
+<td><code>PK11_Authenticate</code></td>
+<td>Authenticates a cryptographic module or unlocks a cryptographic token</td>
+</tr>
+<tr>
+<td><code>PK11SDR_GetInternalKeySlot</code></td>
+<td>Used for decrypting data using the NSS library</td>
+</tr>
+</tbody>
+</table>
+<h2 id="browsers"><strong>Browsers</strong></h2>
+<p>Stealc attempts to get the information from browsers that are Chrome-based, Opera or Mozilla-based. The stolen information could include: login credentials, cookies, autofills, history and credit card details. The information stealer utilizes SQLite with <code>sqlite3.dll</code> library and uses SQL queries with <code>SELECT</code> statements to get the victim&rsquo;s stolen data. In case of Mozilla-based applications, the <code>nss3.dll</code> library is also used to decrypt credentials.</p>
+<h3 id="chromium-based"><strong>Chromium-based</strong></h3>
+<p>First, the malware searches the <code>Local State</code> JSON file to locate Chromium users, then it attempts to gain information from 5 databases:</p>
+<ol>
+<li>
+<p><code>Login Data</code></p>
+</li>
+<li>
+<p><code>Web Data</code></p>
+</li>
+<li>
+<p><code>Cookies</code></p>
+</li>
+<li>
+<p><code>Network</code></p>
+</li>
+<li>
+<p><code>History</code></p>
+</li>
+</ol>
+<h5 id="key-decryption-method"><strong>Key Decryption Method</strong></h5>
+<p>Before getting the information from these databases, the stealer needs to <strong>take care of the encrypted values that Chromium browsers have</strong>. First, it searches the <code>Local State</code> file and locates the key that is encoded with base64. This is decoded with the <code>CryptStringToBinaryA</code> function and with its <code>CRYPT_STRING_BASE64</code> parameter.  Since this string contains <code>'DPAPI'</code> (the name of one of the encryption method) as a prefix of the key, the stealer has to drop this prefix, so that it only decrypts the actual key string. Then it calls the <code>CryptUnprotectData</code> and decrypts the actual key. Finally, the AES-GCM decryption is done with the <code>BCryptDecrypt</code> function. After these steps, the encrypted information from the SQLite databases are easily retrievable.</p>
+<h5 id="logins"><strong>Logins</strong></h5>
+<p>The <code>SELECT origin_url, username_value, password_value FROM logins</code> query gets the username and password values. The <code>password_value</code> is in an encrypted form and decrypted with the method disclosed above.</p>
+<p>After the decryption, the information are saved in the following form:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">browser: %value%\n
+</span></span><span class="line"><span class="cl">profile: %value%\n
+</span></span><span class="line"><span class="cl">url: %url%\n
+</span></span><span class="line"><span class="cl">login: %username_value%\n
+</span></span><span class="line"><span class="cl">password: %password_value%\n\n
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h5 id="cookies"><strong>Cookies</strong></h5>
+<p><code>SELECT HOST_KEY, is_httponly, path, is_secure, (expires_utc/1000000)-11644480800, name, encrypted_value from cookies</code> is the query to collect the cookies. The encrypted cookie value is decrypted with the described method and saves the stolen data into <code>cookies.txt</code>. Inside the text file, each column name is separated with a <code>'\t'</code> (tab) and each cookie is separated with a <code>'\n'</code> (newline) character inside the text file.</p>
+<h5 id="autofill"><strong>Autofill</strong></h5>
+<p>In order to get the autofill information, the malware uses the <code>SELECT name, value FROM autofill</code> query. After that, it saves the stolen data into <code>autofill.txt</code> where each autofill data is split with <code>'\n'</code>.</p>
+<h5 id="history"><strong>History</strong></h5>
+<p><code>SELECT url FROM urls LIMIT 1000</code> gets the history data of the web browser. The <code>LIMIT 1000</code> restricts the number of rows returned, so only the first 1000 results are collected. It saves the stolen data into <code>history.txt</code> and splits each URL with a <code>'\n'</code>.</p>
+<h5 id="credit-cards"><strong>Credit Cards</strong></h5>
+<p><code>SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted FROM credit_cards</code> query collects the credit card details and saves the information to a text file called <code>cc.txt</code>. As the query suggests, the card number comes in an encrypted form which is decrypted with the method above.</p>
+<p>After the decryption process, the card details are written in the following form to the text file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">name: %name_on_card%\n
+</span></span><span class="line"><span class="cl">month: %expiration_month%\n
+</span></span><span class="line"><span class="cl">year: %expiration_year%\n
+</span></span><span class="line"><span class="cl">card: %card_number_decrypted%\n\n
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="mozilla-based"><strong>Mozilla-based</strong></h3>
+<p>The malware first checks the used profiles in the <code>profiles.ini</code> configuration file and targets them. It uses the <code>nss3.dll</code> and the <code>sqlite3.dll</code> libraries to steal data. The <code>sqlite3.dll</code> is used to extract the victim&rsquo;s information with its functions disclosed above in the table. The information that it wants to obtain are: login credentials, cookies, autofills and history data.</p>
+<h5 id="logins-1"><strong>Logins</strong></h5>
+<p>The credentials are stored in <code>logins.json</code>. The stealer looks for the following 5 values inside the JSON file and extracts them: <code>formSubmitURL</code>, <code>usernameField</code>, <code>encryptedUsername</code>, <code>encryptedPassword</code>, <code>guid</code>. Since both the username and password values are encrypted, the stealer attempts to decrypt it with the help of the Network Security Services (NSS) library.</p>
+<p>The decryption routine with the <code>nss3.dll</code> functions:</p>
+<ol>
+<li><code>PK11_GetInternalKeySlot</code>         &ndash;&gt;   Obtains a cryptographic slot</li>
+<li><code>PK11_Authenticate</code>                    &ndash;&gt;   Authenticates a cryptographic module or unlocks a cryptographic token</li>
+<li><code>PK11SDR_GetInternalKeySlot</code>   &ndash;&gt;   Used for decrypting data</li>
+<li><code>PK11_FreeSlot</code>                           &ndash;&gt;   Releases the slot</li>
+</ol>
+<p>After the decryption, the stolen values are collected in the following form:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">browser: %guid%\n
+</span></span><span class="line"><span class="cl">profile: %usernameField%\n
+</span></span><span class="line"><span class="cl">url: %formSubmitURL%\n
+</span></span><span class="line"><span class="cl">login: %username%\n
+</span></span><span class="line"><span class="cl">password: %password%\n\n
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h5 id="cookies-1"><strong>Cookies</strong></h5>
+<p>The applications&rsquo; cookies are stored in the <code>cookies.sqlite</code> database. It is extracted with the <code>SELECT host, isHttpOnly, path, isSecure, expiry, name, value FROM moz_cookies</code> query. The stealer collects information about the domain and path for which the cookie is valid, whether the cookie is &ldquo;http only&rdquo; and secure, the cookie&rsquo;s expiration time, name and value. Then it is written in the <code>cookies.txt</code> file. Each column name is separated with a <code>'\t'</code> and each cookie is separated with a <code>'\n'</code> character inside the text file.</p>
+<h5 id="autofills"><strong>Autofills</strong></h5>
+<p>The autofill information are kept in the <code>formhistory.sqlite</code> database which remembers what the victim searched for in the Firefox search bar and what they’ve entered into forms on websites. It is extracted with the <code>SELECT fieldname, value FROM moz_formhistory</code> query and the stolen data is saved in the <code>autofill.txt</code> file. The <code>fieldname</code> and <code>value</code> columns are separated with a <code>'\t'</code> and each autofill data is on a new line (<code>'\n'</code>).</p>
+<h5 id="history-1"><strong>History</strong></h5>
+<p>The history data can be found in the <code>places.sqlite</code> database which contains the user&rsquo;s Firefox bookmarks, downloaded files and visited websites. The <code>SELECT url FROM moz_places LIMIT 1000</code> query is used to extract the URL and returns the first 1000 rows. Then the retrieved information is written in the <code>history.txt</code> file where each URL is separated with a <code>'\n'</code> character.</p>
+<h3 id="browser-extensions"><strong>Browser Extensions</strong></h3>
+<p>The stealer also targets Chrome-based browser extensions. It searches for the following folders related to extensions:</p>
+<ul>
+<li><code>Local Extension Settings</code>                                               &mdash;&gt;    refers to the configuration and settings specific to a particular Chrome extension</li>
+<li><code>Sync Extension Settings</code>                                                 &mdash;&gt;    the ability to synchronize the settings of an extension across multiple devices</li>
+<li><code>IndexedDB\chrome-extension__0.indexeddb.leveldb</code>    &mdash;&gt;    where an extension might store data using IndexedDB such as user preferences, cached content</li>
+</ul>
+<p>The <code>CURRENT</code> value is also used to get the most recent information related to the extensions. Cryptocurrency wallets are in danger if they are browser-based ones.</p>
+<h2 id="desktop-cryptocurrency-wallets"><strong>Desktop Cryptocurrency Wallets</strong></h2>
+<p>Stealc targets desktop cryptocurrency wallets as well. First, it searches for the wallets with the following file path: <code>C:\Users\%user%\AppData\Roaming\%WalletAppName%\*.*</code>. This is the default location of the applications that are associated with cryptocurrency wallets. The end value of <code>*.*</code> is a wildcard that returns all files with any filename and any file extension within the directory. The <code>%WalletAppName%</code> folder is a randomly generated string of 20 letters, such as <code>AFHIEBKKFHIEGCAKECGH</code>.</p>
+<h2 id="applications"><strong>Applications</strong></h2>
+<h3 id="outlook"><strong>Outlook</strong></h3>
+<p>Microsoft&rsquo;s email client Outlook is also targeted by the infostealer. It looks for registry paths to identify default Outlook profiles:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows Messaging Subsystem\Profiles\Outlook\9375CFF0413111d3B88A00104B2A6676\
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HKEY_CURRENT_USER\Software\Microsoft\Office\13.0\Outlook\Profiles\Outlook\9375CFF0413111d3B88A00104B2A6676\
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HKEY_CURRENT_USER\Software\Microsoft\Office\14.0\Outlook\Profiles\Outlook\9375CFF0413111d3B88A00104B2A6676\
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HKEY_CURRENT_USER\Software\Microsoft\Office\15.0\Outlook\Profiles\Outlook\9375CFF0413111d3B88A00104B2A6676\
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook\Profiles\Outlook\9375CFF0413111d3B88A00104B2A6676\
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">HKEY_CURRENT_USER\Software\Microsoft\Windows Messaging Subsystem\Profiles\9375CFF0413111d3B88A00104B2A6676\
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Under the <code>9375CFF0413111d3B88A00104B2A6676</code> key in the registry path, it searches for the subkeys <code>00000001</code>, <code>00000002</code>, <code>00000003</code>, <code>00000004</code>. The stealer enumerates through these registry paths and if it confirms that Outlook is installed, it targets the password of the victim&rsquo;s account and attempts to decrypt it with the <code>CryptUnprotectData</code> function. After the extraction and decryption of the information, it saves the data into a text file: <code>soft\Outlook\accounts.txt</code>.</p>
+<h3 id="steam"><strong>Steam</strong></h3>
+<p>First of all, the stealer checks whether it can open the registry key at <code>HKEY_CURRENT_USER\Software\Valve\Steam</code>. If it can be opened that means the Steam application is available on the victim&rsquo;s computer and Stealc retrieves the Steam installation path from the <code>SteamPath</code> registry value. It also goes into the <code>\config\</code> folder and extracts VDF (Valve Data Format) files such as <code>config.vdf</code>, <code>DialogConfig.vdf</code>, <code>DialogConfigOverlay*.vdf</code>, <code>libraryfolders.vdf</code>, <code>loginusers.vdf</code> and <code>ssfn*</code> as well. Finally, exfiltrated data is written in the <code>\soft\Steam</code> folder.</p>
+<h3 id="discord"><strong>Discord</strong></h3>
+<p>In case of Discord, it looks for the <code>\Local Storage\leveldb</code> and the <code>\Local Storage\leveldb\CURRENT</code> directories and targets Discord tokens. The tokens are encrypted and every one of them starts with this hard-coded string: <code>dQw4w9WgXcQ</code>. The actual token is after that and the stealer uses the following functions to decrypt: <code>CryptStringToBinaryA</code> (from base64), <code>CryptUnprotectData</code> (DPAPI) and <code>BCryptDecrypt</code> (AES with GCM mode). After the decryption is done, it saves the stolen information in the <code>\soft\Discord\tokens.txt</code> file.</p>
+<h3 id="telegram"><strong>Telegram</strong></h3>
+<p>Under the <code>Telegram Desktop</code> folder, the stealer searches for different subdirectory values like <code>key_datas</code>, <code>D877F783D5D3EF8C*</code>, <code>map*</code>, <code>A7FDF864FBC10B77*</code>, <code>A92DAA6EA6F891F2*</code>, <code>F8806DD0C461824F*</code>. The data stolen from the app is then placed in the <code>\soft\Telegram</code> folder.</p>
+<h3 id="tox"><strong>Tox</strong></h3>
+<p>Tox application&rsquo;s configuration files are also aimed at by the stealer. First, it looks for the <code>\Tox</code> directory and inside that the <code>*.tox</code> and <code>*.ini</code> files.</p>
+<h3 id="pidgin"><strong>Pidgin</strong></h3>
+<p>Pidgin messaging application is also aimed at by the stealer. It looks for the configuration directory of the app which is <code>%APPDATA%\.purple</code>. If it is located, inside the directory the stealer specifically seeks for the <code>accounts.xml</code> file in order to gain Information about the victim&rsquo;s account and credentials.</p>
+<h2 id="victims-machine-information"><strong>Victim&rsquo;s Machine Information</strong></h2>
+<p>Stealc also collects network information and a summary of the system, as well as user agents, installed apps, users, current user and process list. The network information consists of the victim&rsquo;s IP address and their country&rsquo;s ISO code. The stolen information is saved in the <code>system_info.txt</code> in the following manner:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Network Info:
+</span></span><span class="line"><span class="cl">\t- IP: IP?
+</span></span><span class="line"><span class="cl">\t- Country: ISO?
+</span></span><span class="line"><span class="cl">\n\n
+</span></span><span class="line"><span class="cl">System Summary:
+</span></span><span class="line"><span class="cl">\t- HWID: 
+</span></span><span class="line"><span class="cl">\t- OS:
+</span></span><span class="line"><span class="cl">\t- Architecture: 
+</span></span><span class="line"><span class="cl">\t- UserName: 
+</span></span><span class="line"><span class="cl">\t- Computer Name: 
+</span></span><span class="line"><span class="cl">\t- Local Time: 
+</span></span><span class="line"><span class="cl">\t- UTC: 
+</span></span><span class="line"><span class="cl">\t- Language:
+</span></span><span class="line"><span class="cl">\t- Keyboards: 
+</span></span><span class="line"><span class="cl">\t- Laptop: 
+</span></span><span class="line"><span class="cl">\t- Running Path: 
+</span></span><span class="line"><span class="cl">\t- CPU: 
+</span></span><span class="line"><span class="cl">\t- Threads:
+</span></span><span class="line"><span class="cl">\t- Cores: 
+</span></span><span class="line"><span class="cl">\t- RAM:
+</span></span><span class="line"><span class="cl">\t- Display Resolution: 
+</span></span><span class="line"><span class="cl">\t- GPU:
+</span></span><span class="line"><span class="cl">User Agents:
+</span></span><span class="line"><span class="cl">Installed Apps:
+</span></span><span class="line"><span class="cl">All Users:
+</span></span><span class="line"><span class="cl">Current User:
+</span></span><span class="line"><span class="cl">Process List:
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The malware opens 3 registry paths with the functions <code>RegOpenKeyExA</code> and <code>RegQueryValueExA</code> in order to gain information about the victim&rsquo;s machine:</p>
+<ol>
+<li><code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion</code> gives us the information about the version and edition of the Windows NT operating system. The given <code>ProductName</code> value within the <code>RegQueryValueExA</code> carries the name or edition of the Windows NT operating system.</li>
+<li><code>HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0</code> registry path contains information about the CPU. The <code>ProcessorNameString</code> value within the <code>RegQueryValueExA</code> returns the name or description of the CPU installed on the computer.</li>
+<li><code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall</code> path stores information about all of the installed software and lists them on the infected machine. The <code>RegQueryValueExA</code> function has the value <code>DisplayName</code> which retrieves the name of the programs.</li>
+</ol>
+<p>It also takes a screenshot of the desktop with the help of <code>gdiplus.dll</code> and saves it as <code>screenshot.jpg</code>.</p>
+<h2 id="final-stages"><strong>Final Stages</strong></h2>
+<h3 id="c2-communication"><strong>C2 Communication</strong></h3>
+<p>Stealc sends 4 commands back to the <code>hxxp://185.106.94[.]206/4e815d9f1ec482dd.php</code> C2 server and exfiltrates the data with HTTP POST requests:</p>
+<ol>
+<li><code>browsers</code>     &mdash;&gt;    web browser data</li>
+<li><code>plugins</code>       &mdash;&gt;   browser extensions</li>
+<li><code>wallets</code>       &mdash;&gt;   desktop cryptocurrency wallets</li>
+<li><code>files</code>           &mdash;&gt;   file grabber</li>
+</ol>
+<p>The C2 also exfiltrates the data from applications like Outlook, Steam, Discord, Tox, Pidgin as well as the network and system information and the screenshot of the desktop. All the gathered information are encoded in base64.</p>
+<h3 id="removing-itself-from-the-victims-machine"><strong>Removing Itself From The Victim&rsquo;s Machine</strong></h3>
+<p>After the infostealer finished its job by stealing the targeted information, it attempts to remove itself and the 7 imported third-party DLLs from the victim&rsquo;s machine with the command below:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&#34;C:\Windows\system32\cmd.exe&#34; /c timeout /t 5 &amp; del /f /q &#34;Malware_Path&#34; &amp; del &#34;C:\ProgramData\*.dll&#34; &amp; exit
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="iocs"><strong>IOCs</strong></h2>
+<table>
+<thead>
+<tr>
+<th>IOCs</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>e978871a3a76c83f94e589fd22a91c7c1a58175ca5d2110b95d71b7805b25b8d</td>
+<td>Stealc Sample</td>
+</tr>
+<tr>
+<td>hxxp://185.106.94[.]206/4e815d9f1ec482dd.php</td>
+<td>C2 Server</td>
+</tr>
+</tbody>
+</table>
+<h2 id="references"><strong>References</strong></h2>
+<ul>
+<li><a href="https://blog.sekoia.io/stealc-a-copycat-of-vidar-and-raccoon-infostealers-gaining-in-popularity-part-1/" target="_blank" rel="noopener noreffer ">Stealc: a copycat of Vidar and Raccoon infostealers gaining in popularity – Part 1</a></li>
+<li><a href="https://www.vmray.com/cyber-security-blog/stealc-a-new-stealer-emerges-in-2023/" target="_blank" rel="noopener noreffer ">Stealc: A new stealer emerges in 2023</a></li>
+<li><a href="https://www.esentire.com/blog/stealc-delivered-via-deceptive-google-sheets" target="_blank" rel="noopener noreffer ">StealC Delivered via Deceptive Google Sheets</a></li>
+<li><a href="https://brandefense.io/blog/stealc-malware-analysis-report/" target="_blank" rel="noopener noreffer ">Stealc Malware Technical Analysis Report</a></li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-10-03</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://glyc3rius.github.io/2023/10/stealc/" data-title="Stealc Malware Analysis" data-via="Glyc3rius"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://glyc3rius.github.io/2023/10/stealc/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://glyc3rius.github.io/2023/10/stealc/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://glyc3rius.github.io/2023/10/stealc/" data-title="Stealc Malware Analysis"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://glyc3rius.github.io/2023/10/stealc/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://glyc3rius.github.io/2023/10/stealc/" data-title="Stealc Malware Analysis"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://glyc3rius.github.io/2023/10/stealc/" data-title="Stealc Malware Analysis"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"></div>
+</div>
+</article></div>
+            </main></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/css/lightgallery-bundle.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery@2.5.0/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"lightgallery":true,"twemoji":true};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

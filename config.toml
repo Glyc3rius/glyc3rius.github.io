@@ -1,0 +1,239 @@
+baseURL = "https://glyc3rius.github.io"
+theme = "LoveIt"
+title =  "Glyc3rius"
+defaultContentLanguage = "en"
+languageCode = "en"
+languageName = "English"
+hasCJKLanguage = false
+paginate = 12
+enableRobotsTXT = true
+enableGitInfo = false
+enableEmoji = true
+ignoreErrors = ["error-remote-getjson", "error-missing-instagram-accesstoken"]
+
+[author]
+  name = "Glyc3rius"
+  email = "glyc3rius@protonmail.com"
+  link = "https://glyc3rius.github.io"
+
+[taxonomies]
+category = "categories"
+
+[menu]
+  [[menu.main]]
+    weight = 1
+    identifier = "posts"
+    pre = "<i class=\"fa-solid fa-envelopes-bulk\"></i>"
+    post = "All Posts" 
+    name = ""
+    url = "/posts/"
+    title = "Posts"
+#  [[menu.main]]
+#    weight = 2
+#    identifier = "categories"
+#    pre = "<i class=\"fa-solid fa-folder\"></i>"
+#    post = "Categories"
+#    name = ""
+#    url = "/categories/"
+#    title = "Categories"
+    
+[params]
+  defaultTheme = "auto"
+  gitRepo = "https://github.com/dillonzq/LoveIt"
+  fingerprint = ""
+  dateFormat = "2006-01-02"
+  title = "Blog"
+  description = "Malware Reports"
+  images = ["/logo.png"]
+
+  [params.header]
+    desktopMode = "fixed"
+    mobileMode = "auto"
+    [params.header.title]
+      logo = ""
+      name = "Glyc3rius"
+      pre = "<i class='fa-solid fa-viruses' aria-hidden='true'></i>"
+      post = ""
+      typeit = false
+
+  [params.footer]
+    enable = false
+    custom = ""
+    hugo = true
+    copyright = true
+    author = true
+    since = 2023
+    icp = ""
+    license= ""
+
+  [params.section]
+    paginate = 20
+    dateFormat = "01-02"
+    rss = 10
+
+  [params.list]
+    paginate = 20
+    dateFormat = "01-02"
+    rss = 10
+
+  [params.app]
+    title = "Malware Analysis"
+    noFavicon = false
+    svgFavicon = ""
+    themeColor = "#ffffff"
+    iconColor = "#5bbad5"
+    tileColor = "#da532c"
+
+  [params.search]
+    enable = false
+    type = "algolia"
+    contentLength = 4000
+    placeholder = "Find me..."
+    maxResultLength = 10
+    snippetLength = 30
+    highlightTag = "em"
+    absoluteURL = false
+    [params.search.algolia]
+      index = ""
+      appID = ""
+      searchKey = ""
+
+  [params.home]
+    rss = 10
+    [params.home.profile]
+      enable = true
+      gravatarEmail = ""
+      avatarURL = "/images/Avatar.jpg"
+      title = "Glyc3rius"
+      subtitle = "I try to analyse malware..."
+      typeit = false
+      social = true
+      disclaimer = ""
+    [params.home.posts]
+      enable = true
+      paginate = 3
+  [params.social]
+    GitHub         = "Glyc3rius"
+    Twitter        = "Glyc3rius"
+    Email          = "glyc3rius@protonmail.com"
+
+  [params.page]
+    hiddenFromHomePage = false
+    hiddenFromSearch = false
+    twemoji = true
+    lightgallery = true
+    ruby = true
+    fraction = true
+    fontawesome = true
+    linkToMarkdown = false
+    rssFullText = false
+    [params.page.toc]
+      enable = true
+      keepStatic = false
+      auto = true
+    [params.page.code]
+      copy = true
+      maxShownLines = 50
+    [params.page.math]
+      enable = false
+      inlineLeftDelimiter = ""
+      inlineRightDelimiter = ""
+      blockLeftDelimiter = ""
+      blockRightDelimiter = ""
+      copyTex = true
+      mhchem = true
+    [params.page.mapbox]
+ #     accessToken = "pk.eyJ1IjoiZGlsbG9uenEiLCJhIjoiY2s2czd2M2x3MDA0NjNmcGxmcjVrZmc2cyJ9.aSjv2BNuZUfARvxRYjSVZQ"
+      lightStyle = "mapbox://styles/mapbox/light-v10?optimize=true"
+      darkStyle = "mapbox://styles/mapbox/dark-v10?optimize=true"
+      navigation = true
+      geolocate = true
+      scale = true
+      fullscreen = true
+    [params.page.share]
+      enable = true
+      Twitter = true
+      Facebook = true
+      Linkedin = true
+      HackerNews = true
+      Reddit = true
+    [params.page.comment]
+      enable = false
+    [params.page.library]
+      [params.page.library.css]
+        # someCSS = "some.css"
+        # someCSS = "https://cdn.example.com/some.css"
+      [params.page.library.js]
+        # someJavascript = "some.js"
+        # someJavascript = "https://cdn.example.com/some.js"
+
+  [params.typeit]
+    speed = 200
+    cursorSpeed = 1000
+    cursorChar = "|"
+    duration = -1
+
+  # CDN config for third-party library files
+  [params.cdn]
+    # CDN data file name, disabled by default
+    # ["jsdelivr.yml"]
+    # located in "themes/LoveIt/assets/data/cdn/" directory
+    # you can store your own data files in the same path under your project:
+    # "assets/data/cdn/"
+    # ["jsdelivr.yml"]
+    # 位于 "themes/LoveIt/assets/data/cdn/" 目录
+    # "assets/data/cdn/"
+    data = "jsdelivr.yml"
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = false
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      definitionList = true
+      footnote = true
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    ordered = false
+    endLevel = 5
+
+[sitemap]
+  changefreq = "weekly"
+  filename = "sitemap.xml"
+  priority = 0.5
+
+[Permalinks]
+  posts = ":year/:month/:filename"
+
+[privacy]
+  [privacy.twitter]
+    enableDNT = true
+  [privacy.youtube]
+    privacyEnhanced = true
+
+[mediaTypes]
+  [mediaTypes."text/plain"]
+    suffixes = ["md"]
+
+[outputFormats.MarkDown]
+  mediaType = "text/plain"
+  isPlainText = true
+  isHTML = false
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML", "MarkDown"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  taxonomyTerm = ["HTML"]

@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>All Posts - Glyc3rius</title>
+        <link>https://glyc3rius.github.io/posts/</link>
+        <description>All Posts | Glyc3rius</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>glyc3rius@protonmail.com (Glyc3rius)</managingEditor>
+            <webMaster>glyc3rius@protonmail.com (Glyc3rius)</webMaster><lastBuildDate>Tue, 03 Oct 2023 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://glyc3rius.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Stealc Malware Analysis</title>
+    <link>https://glyc3rius.github.io/2023/10/stealc/</link>
+    <pubDate>Tue, 03 Oct 2023 00:00:00 &#43;0000</pubDate>
+    <author>Glyc3rius</author>
+    <guid>https://glyc3rius.github.io/2023/10/stealc/</guid>
+    <description><![CDATA[This sample of Stealc infostealer targets browsers, extensions, desktop cryptocurrency wallets and applications such as Outlook, Steam, Discord, Telegram, Tox, and Pidgin. It also gathers information about the victim's machine. Several anti-analysis methods are applied while strings are obfuscated with base64 and RC4.]]></description>
+</item>
+</channel>
+</rss>

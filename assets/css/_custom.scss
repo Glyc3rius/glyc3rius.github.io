@@ -1,0 +1,32 @@
+// ==============================
+// Custom style
+// ==============================
+
+/* entire content of the web page
+body {
+
+}
+*/
+
+.page {
+    max-width: 950px;
+    /* adjust as needed */
+    margin: 0 auto;
+}
+
+/* table header, table data */
+th, td {
+	width: auto;
+        text-align: left;
+}
+
+/* Style for code blocks */
+pre {
+	color: #FF5733;
+}
+
+/* Style for inline code */
+code {
+	color: #FF5733;
+}
+
