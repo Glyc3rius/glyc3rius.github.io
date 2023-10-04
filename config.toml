@@ -103,7 +103,7 @@ category = "categories"
     [params.home.profile]
       enable = true
       gravatarEmail = ""
-      avatarURL = "/images/Avatar.jpg"
+      avatarURL = "/images/cac8c9e7ef178c847e393198d310830ac8350369c8b4c5b263b94a159daac493.jpg"
       title = "Glyc3rius"
       subtitle = "I try to analyse malware..."
       typeit = false

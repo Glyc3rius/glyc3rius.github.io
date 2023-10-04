@@ -5,9 +5,18 @@ description: This sample of Stealc infostealer targets browsers, extensions, des
 date: 2023-10-03
 draft: "false"
 author: Glyc3rius
+images: []
+resources:
+- name: "featured-image"
+  src: "featured-image.jpg"
+
+categories: ["Reports"]
+
 lightgallery: "true"
 ---
+
 <!--more-->
+
 
 ## **Overview**
 Stealc is just a typical information stealer written in C. The malware encodes/encrypts its strings with base64 and RC4 methods and imports its functions with the help of PEB while several anti-analysis and evasion techniques are also applied. It drops 7 additional third-party DLLs (such as `sqlite3.dll`) from the C2 server. The stealing procedure targets browsers, browser extensions, desktop cryptocurrency wallets and applications such as Outlook, Steam, Discord, Telegram, Tox, and Pidgin. It gathers information about the victim's machine as well and after its all done, removes itself and the dropped DLLs from the computer. 
@@ -16,7 +25,7 @@ The analysed sample's SHA-256 is `e978871a3a76c83f94e589fd22a91c7c1a58175ca5d211
 
 
 ## **String Obfuscation**
-Inside the disassembler, we discover two functions which contain likely important strings that are encoded with base64. After decoding them, we can conclude that an encryption mechanism is used as well. In search of it, an RC4 algorithm is found with its hard-coded key: `52129722198130874989795557381261264814249348323986`. I decrypted these strings with a simple [python script](https://github.com/Glyc3rius/python-scripts/blob/cd6b9192daaf5787fcdd06cb31fdb7f3468bbd89/Stealc/stealc_string_decryption.ipynb). The deobfuscated strings are:
+Inside the disassembler, we discover two functions which contain likely important strings that are encoded with base64. After decoding them, we can conclude that an encryption mechanism is used as well. In search of it, an RC4 algorithm is found with its hard-coded key: `52129722198130874989795557381261264814249348323986`. I decrypted these strings with a simple [python script](https://github.com/Glyc3rius/python-scripts/blob/18d7789d7f452bf28427114d6319f4c1283e47a4/Stealc/stealc_string_decryption.ipynb). The deobfuscated strings are:
 
 ```
  11
@@ -386,14 +395,14 @@ Accessing the PEB structure can be described with the table below:
 Inside the `DllBase`, the malware looks for the base address of `kernel32.dll`. After that it loads the `GetProcAddress` function that is used to dynamically resolve the address of the `LoadLibraryA` function. Then, `LoadLibraryA` loads additional DLLs that the malware can utilize and their functions are also called with `GetProcAddress` dynamically. 
 
 ## **Anti-analysis and Evasion Methods**
-### **Screen Size of Monitor** 
-First, Stealc checks the screen size of the victim's monitor and compares the `GetDeviceCaps` function's return value to 666 which represents the screen width. In case the screen width is below 666 pixels, the malware stops execution. This is a technique to avoid virtual machines with lower resolutions which are not expected in a regular environment.
+### **Monitor Resolution** 
+First, Stealc checks the number of pixels the screen can show vertically and compares the `GetDeviceCaps` function's return value to 666 which represents the screen height. In case the screen height is below 666 pixels, the malware stops execution (for example, if the screen resolution is `800x600` then the `ExitProcess` is called, since 600 is lower than 666). This is a technique to avoid virtual machines with lower resolutions which are not expected in a regular environment.
 ### **Number of Processor Cores**
 It checks whether the victim's machine has a processor with at least 2 cores. If it doesn't, the malware stops execution, since it assumes that the machine is in a virtualized environment. 
-### **Checking Memory Usage**
-With `GlobalMemoryStatusEx` , the malware retrieves information about the system's physical and virtual memory. This ensures that the malware is not running under a virtual machine. If it is under 1111 MB of memory, the malware calls the `ExitProcess` function. 
+### **Memory Check**
+With `GlobalMemoryStatusEx` , the malware retrieves information about the system's physical and virtual memory. If the total physical memory is under 1111 MB of memory, the malware calls the `ExitProcess` function. This ensures that the malware is not running under a virtual machine.
 ### **Memory Allocation**
-The stealer also tries to allocate memory with `VirtualAllocExNuma`. It is an anti-emulator technique, since an AV emulator can't perform this kind of allocation making the API call fail. If the allocation doesn't happen, the malware exits immediately. 
+The stealer also tries to allocate memory with `VirtualAllocExNuma`. It is an anti-emulator technique, since an AV emulator can't perform this kind of allocation, making the API call fail. If the allocation doesn't happen, the malware exits immediately. 
 ### **Language Check**
 Stealc checks the language ID of the current user with the `GetUserDefaultLangID` function and if they return one of the hexadecimal values from the table below, then the malware exits and won't run on the victim's computer.
 
@@ -601,7 +610,7 @@ Stealc sends 4 commands back to the `hxxp://185.106.94[.]206/4e815d9f1ec482dd.ph
 3. `wallets`       --->   desktop cryptocurrency wallets
 4. `files`           --->   file grabber
 
-The C2 also exfiltrates the data from applications like Outlook, Steam, Discord, Tox, Pidgin as well as the network and system information and the screenshot of the desktop. All the gathered information are encoded in base64.  
+The C2 also exfiltrates the data from applications like Outlook, Steam, Discord, Tox, Pidgin as well as the network and system information and the screenshot of the desktop. All the gathered information are encoded in base64 during the HTTP communication.  
 
 ### **Removing Itself From The Victim's Machine**
 
