@@ -5,13 +5,8 @@ description: This sample of Stealc infostealer targets browsers, extensions, des
 date: 2023-10-03
 draft: "false"
 author: Glyc3rius
-images: []
-resources:
-- name: "featured-image"
-  src: "featured-image.jpg"
-
-categories: ["Reports"]
-
+categories:
+  - Reports
 lightgallery: "true"
 ---
 
