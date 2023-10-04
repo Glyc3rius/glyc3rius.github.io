@@ -440,7 +440,7 @@ Before the malware starts its information stealing procedure, it downloads 7 DLL
 |`PK11SDR_GetInternalKeySlot`|Used for decrypting data using the NSS library|
 
 ## **Browsers**
-Stealc attempts to get the information from browsers that are Chrome-based, Opera or Mozilla-based. The stolen information could include: login credentials, cookies, autofills, history and credit card details. The information stealer utilizes SQLite with `sqlite3.dll` library and uses SQL queries with `SELECT` statements to get the victim's stolen data. In case of Mozilla-based applications, the `nss3.dll` library is also used to decrypt credentials. 
+Stealc attempts to get the information from browsers that are based on **Chromium, Opera, or Mozilla**. The data related to Opera-based browsers (Opera, Opera GX) are exfiltrated the same way as the Chromium ones. The stolen information could include: login credentials, cookies, autofills, history and credit card details. The information stealer utilizes SQLite with `sqlite3.dll` library and uses SQL queries with `SELECT` statements to get the victim's stolen data. In case of Mozilla-based applications, the `nss3.dll` library is also used to decrypt credentials. 
 ### **Chromium-based**
 First, the malware searches the `Local State` JSON file to locate Chromium users, then it attempts to gain information from 5 databases:
 1. `Login Data`
@@ -594,20 +594,17 @@ The malware opens 3 registry paths with the functions `RegOpenKeyExA` and `RegQu
 
 It also takes a screenshot of the desktop with the help of `gdiplus.dll` and saves it as `screenshot.jpg`.
 
-## **Final Stages**
+## **C2 Communication**
 
-### **C2 Communication**
-
-Stealc sends 4 commands back to the `hxxp://185.106.94[.]206/4e815d9f1ec482dd.php` C2 server and exfiltrates the data with HTTP POST requests:
+Stealc sends multiple HTTP POST requests back to the `hxxp://185.106.94[.]206/4e815d9f1ec482dd.php` C2 server that gives a response. Here are the 4 most important requests:
 
 1. `browsers`     --->    web browser data
 2. `plugins`       --->   browser extensions
 3. `wallets`       --->   desktop cryptocurrency wallets
 4. `files`           --->   file grabber
 
-The C2 also exfiltrates the data from applications like Outlook, Steam, Discord, Tox, Pidgin as well as the network and system information and the screenshot of the desktop. All the gathered information are encoded in base64 during the HTTP communication.  
-
-### **Removing Itself From The Victim's Machine**
+The 7 DLLs are also dropped from the C2 to the host as already mentioned. The malware then gets the  information related to the 4 requests and sends them back to the C2. The data from applications like Outlook, Steam, Discord, Tox, Pidgin as well as the network and system information and the screenshot of the desktop are also exfiltrated. Every configuration and all the gathered information are encoded in base64 during the HTTP communication.
+## **Removing Itself From The Victim's Machine**
 
 After the infostealer finished its job by stealing the targeted information, it attempts to remove itself and the 7 imported third-party DLLs from the victim's machine with the command below:
 
@@ -627,6 +624,7 @@ After the infostealer finished its job by stealing the targeted information, it 
 ## **References**
 
 - [Stealc: a copycat of Vidar and Raccoon infostealers gaining in popularity – Part 1](https://blog.sekoia.io/stealc-a-copycat-of-vidar-and-raccoon-infostealers-gaining-in-popularity-part-1/)
+- [Stealc: a copycat of Vidar and Raccoon infostealers gaining in popularity – Part 2](https://blog.sekoia.io/stealc-a-copycat-of-vidar-and-raccoon-infostealers-gaining-in-popularity-part-2/#h-anti-analysis)
 - [Stealc: A new stealer emerges in 2023](https://www.vmray.com/cyber-security-blog/stealc-a-new-stealer-emerges-in-2023/)
 - [StealC Delivered via Deceptive Google Sheets](https://www.esentire.com/blog/stealc-delivered-via-deceptive-google-sheets)
 - [Stealc Malware Technical Analysis Report](https://brandefense.io/blog/stealc-malware-analysis-report/)
