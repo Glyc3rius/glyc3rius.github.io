@@ -15,7 +15,7 @@ STOP/DJVU ransomware can be executed with one of the parameters listed: `--Admin
 ## **Unpacking**
 The unpacking procedure is fairly simple. We only have to put a breakpoint on the `WriteProcessMemory` function that writes data to an area of memory in a specified process, then run the program until it hits that breakpoint. We need to dump the 3rd argument of `WriteProcessMemory` which is the `lpBuffer` that is a pointer to the buffer that contains data to be written in the address space of the specified process. After following it in dump, the `MZ` signature is found which is a clear indicator of a Windows executable. The last thing that should be done is to clear the junk code in a hex editor and we finally obtain the unpacked file.
 
-![](images/stop_ransomware/unpacking_annoted.jpg)
+![](images/stop_ransomware/unpacking.jpg)
 <figure>
 <figcaption><em>Figure 1: Unpacking STOP Ransomware</em></figcaption>
 </figure>

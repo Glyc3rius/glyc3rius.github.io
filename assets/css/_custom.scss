@@ -2,11 +2,12 @@
 // Custom style
 // ==============================
 
-/* entire content of the web page */
+/* entire content of the web page 
 body {
 
 
 }
+*/
 
 
 .page {
@@ -42,8 +43,10 @@ img {
         margin-left: auto !important;
         margin-right: auto !important;
 }
-    
- .markdown-source-view.mod-cm6 .cm-content > * {
-        margin: auto auto !important;
+
+.markdown-source-view.mod-cm6 .cm-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
