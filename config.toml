@@ -186,6 +186,10 @@ category = "categories"
     data = "jsdelivr.yml"
 
 [markup]
+  [markup.goldmark.parser]
+    wrapStandAloneImageWithinParagraph = false
+  [markup.goldmark.parser.attribute]
+    block = true
   [markup.highlight]
     codeFences = true
     guessSyntax = true
