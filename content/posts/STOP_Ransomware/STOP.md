@@ -8,7 +8,6 @@ author: Glyc3rius
 categories:
   - Reports
 lightgallery: "true"
-featuredImage: /images/stop_ransomware/featuredimage.jpg
 ---
 ## **Overview**
 STOP/DJVU ransomware can be executed with one of the parameters listed: `--Admin`, `--ForNetRes`, `--Task `, `--AutoStart` or `--Service` . It gathers location information of the victim with the help of a geolocation API service and compares its hard coded country codes to the victim's code, if one of them matches the malware stops running. It uses the `Salsa20` algorithm to encrypt files and adds the `.cdpo` file extension at the end of each one of them. The malware maintains persistence with two methods: a run key named `SysHelper` and a scheduled task called `Time Trigger Task`. It drops additional payloads (in our case Vidar and a Clipboard Hijacker) from malicious URLs and a Public Key is also loaded from the C2 server. 
